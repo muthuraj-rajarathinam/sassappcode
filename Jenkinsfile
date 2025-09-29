@@ -2,43 +2,51 @@ pipeline {
     agent any
 
     environment {
-        GIT_CREDENTIALS = 'argocd-id'                        
-        TARGET_REPO = 'https://github.com/muthuraj-rajarathinam/Argocd-connector-saas.git'
+        APP_REPO_CREDENTIALS = 'sass-code'                        
+        APP_REPO = 'https://github.com/muthuraj-rajarathinam/sassappcode.git'
+        GITOPS_REPO_CREDENTIALS = 'argocd-id'                        
+        GITOPS_REPO = 'https://github.com/muthuraj-rajarathinam/Argocd-connector-saas.git'
         IMAGE_NAME = "muthuraj07/gitapp"        // Docker Hub repo
-        DOCKER_CREDENTIALS = 'dockerhub-creds'  // Make sure this matches Jenkins credential ID
+        DOCKER_CREDENTIALS = 'dockerhub-creds'  // Jenkins Docker Hub creds
         IMAGE_TAG = "${env.BUILD_NUMBER}"       // Unique tag per build
         DEPLOYMENT_FILE = "dev/app-deployment.yaml"
     }
 
     stages {
-        stage('Checkout GitOps Repo') {
+        stage('Checkout App Repo') {
             steps {
                 git branch: 'main',
-                    credentialsId: "${env.GIT_CREDENTIALS}",
-                    url: "${env.TARGET_REPO}"
+                    credentialsId: "${env.APP_REPO_CREDENTIALS}",
+                    url: "${env.APP_REPO}"
             }
         }
 
         stage('Build & Push Docker Image') {
             steps {
-            sh 'ls -l'
-
+                sh 'ls -l'  // debug: confirm Dockerfile exists here
                 withDockerRegistry([credentialsId: "${env.DOCKER_CREDENTIALS}", url: '']) {
-    sh """
-        docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
-        docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest
-        docker push ${IMAGE_NAME}:${IMAGE_TAG}
-        docker push ${IMAGE_NAME}:latest
-    """
-}
+                    sh """
+                        docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                        docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest
+                        docker push ${IMAGE_NAME}:${IMAGE_TAG}
+                        docker push ${IMAGE_NAME}:latest
+                    """
+                }
+            }
+        }
 
+        stage('Checkout GitOps Repo') {
+            steps {
+                git branch: 'main',
+                    credentialsId: "${env.GITOPS_REPO_CREDENTIALS}",
+                    url: "${env.GITOPS_REPO}"
             }
         }
 
         stage('Update GitOps Deployment') {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: "${env.GIT_CREDENTIALS}", 
+                    credentialsId: "${env.GITOPS_REPO_CREDENTIALS}", 
                     usernameVariable: 'GITHUB_USERNAME', 
                     passwordVariable: 'GITHUB_TOKEN')]) {
                     sh """
@@ -59,7 +67,7 @@ pipeline {
 
     post {
         success {
-            echo "✅ Docker image built, pushed, and GitOps repo updated. Argo CD will deploy automatically!"
+            echo "✅ Docker image built from app repo, pushed, and GitOps repo updated!"
         }
         failure {
             echo "❌ Pipeline failed. Check log"
