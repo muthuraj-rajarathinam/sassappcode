@@ -31,12 +31,12 @@ pipeline {
             steps {
                 script {
                     sh """
-                        git config user.email "jenkins@example.com"
-                        git config user.name "Jenkins CI"
-                        git add ${env.FILE_NAME}
-                        git commit -m "Jenkins created ${env.FILE_NAME}"
-                        git push origin main
-                    """
+                         git config user.email "jenkins@example.com"
+                         git config user.name "Jenkins CI"
+                         git add ${env.FILE_NAME}
+                         git commit -m "Jenkins created ${env.FILE_NAME}"
+                         git push https://${GITHUB_USERNAME}:${GITHUB_PAT}@github.com/muthuraj-rajarathinam/Argocd-connector-saas.git main
+                       """ 
                 }
             }
         }
