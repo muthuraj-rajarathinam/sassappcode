@@ -2,16 +2,13 @@ pipeline {
     agent any
 
     environment {
-        GIT_CREDENTIALS = 'argocd-id'                        
+        GIT_CREDENTIALS = 'argocd-id'
         TARGET_REPO = 'https://github.com/muthuraj-rajarathinam/Argocd-connector-saas.git'
-        IMAGE_NAME = "muthuraj07/gitapp"        // Docker Hub repo
-        DOCKER_CREDENTIALS = 'dockerhub-creds'  // Make sure this matches Jenkins credential ID
-        IMAGE_TAG = "${env.BUILD_NUMBER}"       // Unique tag per build
-        DEPLOYMENT_FILE = "dev/app-deployment.yaml"
+        FILE_NAME = "newfile.txt"
     }
 
     stages {
-        stage('Checkout GitOps Repo') {
+        stage('Checkout Target Repo') {
             steps {
                 git branch: 'main',
                     credentialsId: "${env.GIT_CREDENTIALS}",
@@ -19,48 +16,34 @@ pipeline {
             }
         }
 
-        stage('Build & Push Docker Image') {
-    steps {
-        script {
-            docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
-                def app = docker.build("muthuraj07/gitapp:${env.BUILD_NUMBER}")
-                app.push()
-                app.push("latest")
-            }
-        }
-    }
-}
-
-
-        stage('Update GitOps Deployment') {
+        stage('Create File') {
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: "${env.GIT_CREDENTIALS}", 
-                    usernameVariable: 'GITHUB_USERNAME', 
-                    passwordVariable: 'GITHUB_TOKEN')]) {
+                script {
+                    // Use ${} to access Groovy variable
                     sh """
-                        cd dev
-                        sed -i "s|image: .*|image: ${IMAGE_NAME}:${IMAGE_TAG}|g" app-deployment.yaml
-                        
-                        git config user.email "jenkins@example.com"
-                        git config user.name "Jenkins CI"
-
-                        git add app-deployment.yaml
-                        git commit -m "Update image to ${IMAGE_NAME}:${IMAGE_TAG}" || echo "No changes to commit"
-                        git push https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/muthuraj-rajarathinam/Argocd-connector-saas.git main
+                        echo "This is a new file created by Jenkins on \$(date)" > ${env.FILE_NAME}
                     """
                 }
             }
         }
-    }
 
-    post {
-        success {
-            echo "✅ Docker image built, pushed, and GitOps repo updated. Argo CD will deploy automatically!"
-        }
-        failure {
-            echo "❌ Pipeline failed. Check log"
+        stage('Commit & Push') {
+    steps {
+        withCredentials([usernamePassword(
+            credentialsId: "${env.GIT_CREDENTIALS}", 
+            usernameVariable: 'GITHUB_USERNAME', 
+            passwordVariable: 'GITHUB_TOKEN')]) {
+                
+            sh """
+                git config user.email "jenkins@example.com"
+                git config user.name "Jenkins CI"
+                git add ${env.FILE_NAME}
+                git commit -m "Jenkins created ${env.FILE_NAME}"
+                git push https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/muthuraj-rajarathinam/Argocd-connector-saas.git main
+            """
         }
     }
 }
 
+    }
+} this is my test code it works fine so now change this to according to our idea
