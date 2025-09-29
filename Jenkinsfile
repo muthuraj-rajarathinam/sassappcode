@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        GIT_CREDENTIALS = 'e5cc005d-cd56-445b-8396-0cc74487f2d8'
-        TARGET_REPO = 'git@github.com:muthuraj-rajarathinam/other-repo.git'
+        GIT_CREDENTIALS = 'argocd-id'
+        TARGET_REPO = 'git@github.com:muthuraj-rajarathinam/Argocd-connector-saas.git'
         FILE_NAME = "newfile.txt"
     }
 
