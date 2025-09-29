@@ -1,34 +1,27 @@
 pipeline {
     agent any
-
-    environment {
-        IMAGE = "username/buzzgen:${env.BUILD_NUMBER}"   // unique tag
-    }
-
+    tools { nodejs "NodeJS" }  // requires NodeJS tool configured in Jenkins
     stages {
-        stage('Build & Push Image') {
+        stage('Checkout') {
             steps {
-                sh """
-                docker build -t $IMAGE .
-                echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-                docker push $IMAGE
-                """
+                checkout scm
             }
         }
-
-        stage('Update GitOps Repo') {
+        stage('Install') {
             steps {
-                sh """
-                git clone https://github.com/muthuraj-rajarathinam/Argocd-connector-saas.git
-                cd my-gitops-repo/dev
-                sed -i "s|image: .*|image: $IMAGE|g" app-deployment.yaml
-                git config user.name "jenkins"
-                git config user.email "jenkins@ci"
-                git add app-deployment.yaml
-                git commit -m "update image to $IMAGE"
-                git push https://$GIT_USERNAME:$GIT_PASSWORD@github.com/muthuraj-rajarathinam/Argocd-connector-saas.git
-                """
+                sh 'npm install'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'npm test'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'npm run build'
             }
         }
     }
 }
+
