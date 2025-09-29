@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         GIT_CREDENTIALS = 'argocd-id'
-        TARGET_REPO = 'git@github.com:muthuraj-rajarathinam/Argocd-connector-saas.git'
+        TARGET_REPO = 'https://github.com/muthuraj-rajarathinam/Argocd-connector-saas.git'
         FILE_NAME = "newfile.txt"
     }
 
