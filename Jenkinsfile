@@ -1,25 +1,9 @@
 pipeline {
     agent any
-    tools { nodejs "NodeJS" }  // requires NodeJS tool configured in Jenkins
     stages {
-        stage('Checkout') {
+        stage('Hello') {
             steps {
-                checkout scm
-            }
-        }
-        stage('Install') {
-            steps {
-                sh 'npm install'
-            }
-        }
-        stage('Test') {
-            steps {
-                sh 'npm test'
-            }
-        }
-        stage('Build') {
-            steps {
-                sh 'npm run build'
+                echo "Hello, Jenkins! Build triggered from GitHub push."
             }
         }
     }
