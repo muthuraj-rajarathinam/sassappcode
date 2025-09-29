@@ -20,22 +20,17 @@ pipeline {
         }
 
         stage('Build & Push Docker Image') {
-            steps {
-                withCredentials([usernamePassword(
-                    credentialsId: "${env.DOCKER_CREDENTIALS}", 
-                    usernameVariable: 'DOCKER_USERNAME', 
-                    passwordVariable: 'DOCKER_PASSWORD')]) {
-                    
-                    sh """
-                        echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
-                        docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
-                        docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest
-                        docker push ${IMAGE_NAME}:${IMAGE_TAG}
-                        docker push ${IMAGE_NAME}:latest
-                    """
-                }
+    steps {
+        script {
+            docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
+                def app = docker.build("muthuraj07/gitapp:${env.BUILD_NUMBER}")
+                app.push()
+                app.push("latest")
             }
         }
+    }
+}
+
 
         stage('Update GitOps Deployment') {
             steps {
