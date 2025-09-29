@@ -64,7 +64,7 @@ pipeline {
             echo "✅ Docker image built, pushed, and GitOps repo updated. Argo CD will deploy automatically!"
         }
         failure {
-            echo "❌ Pipeline failed. Check logs."
+            echo "❌ Pipeline failed. Check log"
         }
     }
 }
