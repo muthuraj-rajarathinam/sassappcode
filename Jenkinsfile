@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         GIT_CREDENTIALS = 'e5cc005d-cd56-445b-8396-0cc74487f2d8'  // ID of credentials stored in Jenkins
-        TARGET_REPO = 'git@github.com:muthuraj-rajarathinam/Argocd-connector-saas' 
+        TARGET_REPO = 'git@github.com:muthuraj-rajarathinam/Argocd-connector-saas/' 
         FILE_NAME = "newfile.txt"
     }
 
