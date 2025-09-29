@@ -21,6 +21,8 @@ pipeline {
 
         stage('Build & Push Docker Image') {
             steps {
+            sh 'ls -l'
+
                 withDockerRegistry([credentialsId: "${env.DOCKER_CREDENTIALS}", url: '']) {
     sh """
         docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
