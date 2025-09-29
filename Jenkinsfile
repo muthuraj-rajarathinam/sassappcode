@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        GIT_CREDENTIALS = 'github-creds'
+        GIT_CREDENTIALS = 'e5cc005d-cd56-445b-8396-0cc74487f2d8'
         TARGET_REPO = 'git@github.com:muthuraj-rajarathinam/other-repo.git'
         FILE_NAME = "newfile.txt"
     }
