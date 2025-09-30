@@ -220,10 +220,10 @@ Inside Jenkins:
     * password = **Docker Hub access token** (NOT your account password; create it on Docker Hub Security → New Access Token)
 
 
-* GitHub (for pushing to GitOps repo): type *Username with password* or *Secret text (token)*
+* GitHub (for pulling to Appcode repo): type *Username with password* or *Secret text (token)*
     * id = `sassapp-id` (example) with PAT that has repo:reade & write on `sassappcde`
 
-  * GitHub (for pushing to GitOps repo): type *Username with password* or *Secret text (token)*
+* GitHub (for pushing to GitOps repo): type *Username with password* or *Secret text (token)*
     * id = `argocd-id` (example) with PAT that has repo:Read & write on `Argocd-connector-saas`
   
 
