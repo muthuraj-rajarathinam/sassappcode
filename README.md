@@ -248,13 +248,7 @@ ngrok http 8080
 ---
 
 
-# 8) GitOps manifests 
-
-```
-Add all Necessary .yaml file
-```
-
-# 10) Full run / test flow (commands and checks)
+# 7) Full run / test flow (commands and checks)
 
 1. **Push code (app repo)**:
 
