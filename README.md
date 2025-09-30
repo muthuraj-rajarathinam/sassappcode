@@ -1,4 +1,4 @@
-Jenkins + ArgoCD GitOps CI/CD for SaaS App.
+# Jenkins + ArgoCD GitOps CI/CD for SaaS App.
 
 This project demonstrates a complete GitOps CI/CD pipeline where developers push code, Jenkins builds and pushes Docker images, updates Kubernetes manifests in a GitOps repo, and Argo CD automatically deploys the app to a Kubernetes cluster. It also includes Prometheus monitoring and Grafana dashboards for observability. This is ideal for modern SaaS applications that need fully automated, reliable deployments.
 
